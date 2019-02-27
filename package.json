@@ -14,6 +14,7 @@
     "typescript": "^3.3.3333"
   },
   "scripts": {
+    "prepare": "tsc --outDir dist/esm",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

@@ -67,3 +67,12 @@ export async function getDocumentInfos(crossingLocationId: number) {
     "MilepostDirectionCode"
   ]);
 }
+
+export async function getAllRelatedInfo(crossingLocationId: number) {
+  const laneInfoTask = getLaneInfo(crossingLocationId);
+  const advisoryNotesTask = getAdvisoryNotes(crossingLocationId);
+  const documentInfoTask = getDocumentInfos(crossingLocationId);
+
+  return Promise.all([laneInfoTask, advisoryNotesTask, documentInfoTask]);
+
+}
