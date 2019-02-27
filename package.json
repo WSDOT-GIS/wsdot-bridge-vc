@@ -1,0 +1,28 @@
+{
+  "name": "@wsdot/bridge-vc",
+  "version": "0.0.0",
+  "description": "Client for Bridge Vertical Clearance map service queries",
+  "main": "index.js",
+  "dependencies": {
+    "@esri/arcgis-rest-request": "^1.17.0"
+  },
+  "devDependencies": {
+    "prettier": "^1.16.4",
+    "tslint": "^5.13.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.3.3333"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wsdot",
+    "bridge",
+    "vertical",
+    "clearance"
+  ],
+  "private": true,
+  "author": "WSDOT",
+  "license": "Unlicense"
+}
