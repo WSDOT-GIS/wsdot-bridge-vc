@@ -1,4 +1,4 @@
-import { request } from "@esri/arcgis-rest-request";
+import ArcGisError from "./ArcGisError";
 
 const defaultMapServiceUrl =
   "https://data.wsdot.wa.gov/arcgis/rest/services/Bridge/BridgeVerticalClearance/MapServer";
@@ -141,11 +141,12 @@ export async function fetchCrossingInfo(
   crossingLocationId: number,
   mapServerUrl: string = defaultMapServiceUrl
 ): Promise<ICrossing> {
-  const url = combineUrlParts(
-    mapServerUrl,
-    crossingEndpoint,
-    crossingLocationId.toString(10)
-  );
+  const url =
+    combineUrlParts(
+      mapServerUrl,
+      crossingEndpoint,
+      crossingLocationId.toString(10)
+    ) + "?f=json";
   const response = await fetch(url);
   const responseJsonText = await response.text();
 
@@ -165,5 +166,25 @@ export async function fetchCrossingInfo(
     return value;
   }
 
-  return JSON.parse(responseJsonText, reviver);
+  let responseObj: any;
+
+  try {
+    responseObj = JSON.parse(responseJsonText, reviver);
+  } catch (err) {
+    if (err instanceof SyntaxError) {
+      const re = /Unexpected token (\S) in JSON at position (\d+)/gi;
+      const match = err.message.match(re);
+      if (match) {
+        const msg = `Error parsing response from ${url}\n${responseJsonText}`;
+        throw new SyntaxError(msg);
+      }
+    }
+    throw err;
+  }
+
+  if (responseObj.hasOwnProperty("error")) {
+    throw new ArcGisError(responseObj);
+  }
+
+  return responseObj;
 }
