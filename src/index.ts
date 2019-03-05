@@ -3,118 +3,167 @@ import { request } from "@esri/arcgis-rest-request";
 const defaultMapServiceUrl =
   "https://data.wsdot.wa.gov/arcgis/rest/services/Bridge/BridgeVerticalClearance/MapServer";
 
+const soePartialUrl = "exts/BridgeVC";
+
+const imageEndpoint = `${soePartialUrl}/image`;
+const crossingEndpoint = `${soePartialUrl}/crossing`;
+
+function combineUrlParts(root: string, ...parts: string[]) {
+  let tail = parts.join("/");
+  tail = tail.replace(/\/{2,}/, "/");
+  return root.replace(/\/?$/, `/${tail}`);
+}
+
 export type Direction = "I" | "D" | "B";
 
+export type ABIndicator = "B";
+
+export type OnUnderCode = "ON" | "UNDER";
+
 /**
- * Attributes of a lane record
+ * A collection of data related to a crossing location
+ * for a specific direction.
  */
-export interface ILaneInfo {
-  LaneNumber: number;
-  MilepostDirectionCode: string;
-  VerticalClearanceMinimum: number;
+export interface IDirectionalRelatedData {
+  Direction: Direction;
+  /**
+   * An array of lane minimum vertical clearance values
+   * ordered by lane number.
+   */
+  Lanes: number[];
+  /**
+   * URL to a photograph of lane imagery.
+   */
+  Document: string | null;
+  /**
+   * Advisory note
+   */
+  AdvisoryNote: string | null;
 }
 
 /**
- * Attributes of an Advisory Note record
+ * A collection of related data grouped into
+ * Increase and Decrease directions
  */
-export interface IAdvisoryNote {
+export interface IRelatedData {
+  /**
+   * Related data for the increasing direction.
+   */
+  Increase?: IDirectionalRelatedData | null;
+  /**
+   * Related data for the decreasing direction.
+   */
+  Decrease?: IDirectionalRelatedData | null;
+}
+
+/**
+ * Information about a crossing location feature.
+ */
+export interface ICrossingLocation {
+  /**
+   * Unique ID integer for the crossing location.
+   */
+  CrossingLocationId: number;
+  /**
+   * State Structure ID.
+   */
+  StateStructureId: string;
+  /**
+   * Bridge Number
+   */
+  BridgeNumber: string;
+  /**
+   * State Route Identifier
+   */
+  StateRouteIdentifier: string;
+  /**
+   * State Route Milepost
+   */
+  SRMP: number;
+  /**
+   * Ahead / Back indicator for the SRMP. "B" = "back" mileage.
+   * Otherwise "ahead" is assumed.
+   */
+  ABInd: ABIndicator | null;
+  /**
+   * Direction
+   */
   DirectionInd: Direction;
-  AdvisoryNote: string;
+  /**
+   * Description of the crossing
+   */
+  CrossingDesc: string;
+  /**
+   * "ON" or "UNDER"
+   */
+  OnUnderCode: OnUnderCode;
+  /**
+   * Indicates if review has been performed for the increasing direction
+   */
+  DecreasingDirReviewCmltInd: boolean;
+  /**
+   * Indicates if review has been performed for the decreasing direction
+   */
+  IncreasingDirReviewCmltInd: boolean;
+  /**
+   * Date that the record was created.
+   */
+  RecordCreateData: Date;
+  /**
+   * Date that the record was last updated. Will be null if
+   * the record has not been updated since creation.
+   */
+  RecordUpdateDate: Date | null;
 }
 
 /**
- * Attributes of a Document record.
+ * Information about a crossing location feature and data
+ * from related tables.
  */
-export interface IDocumentInfo {
-  BridgeDocumentId: number;
-  MilepostDirectionCode: Direction;
+export interface ICrossing {
+  /**
+   * Crossing location
+   */
+  CrossingLocation: ICrossingLocation;
+  /**
+   * Data related to the crossing location.
+   */
+  RelatedData: IRelatedData;
 }
 
 /**
- * An ArcGIS Feature
+ * Uses fetch API go retrieve info about a crossing location
+ * using the Bridge Vertical Clearance REST SOE.
+ * @param crossingLocationId Unique identifying integer of a crossing location.
+ * @param mapServerUrl URL of the map service that will be queried.
  */
-export interface IFeature<T> {
-  attributes: T;
-}
-
-/**
- * The response of a map service layer query request.
- */
-export interface IQueryResponse<T> {
-  features: IFeature<T>[];
-}
-
-/**
- * Queries a map service table for features related to a specific crossing location.
- * @param crossingLocationId
- * @param tableId
- * @param outFields
- * @param mapServiceUrl
- */
-export async function getRelatedInfo<T>(
+export async function fetchCrossingInfo(
   crossingLocationId: number,
-  tableId: number,
-  outFields: string[],
-  mapServiceUrl: string = defaultMapServiceUrl
-) {
-  const where = `CrossingLocationId = ${crossingLocationId}`;
-  const queryUrl = `${mapServiceUrl.replace(/\/?$/, "")}/${tableId}/query`;
-  const queryResponse: IQueryResponse<T> = await request(queryUrl, {
-    params: {
-      where,
-      outFields: outFields.join(",")
+  mapServerUrl: string = defaultMapServiceUrl
+): Promise<ICrossing> {
+  const url = combineUrlParts(
+    mapServerUrl,
+    crossingEndpoint,
+    crossingLocationId.toString(10)
+  );
+  const response = await fetch(url);
+  const responseJsonText = await response.text();
+
+  /**
+   * Custom JSON parsing function that handles date conversion and
+   * converts document ID to full document URL.
+   * @param key - Property name
+   * @param value - property value
+   */
+  function reviver(key: string, value: any) {
+    if (/Date$/i.test(key) && typeof value === "string") {
+      return new Date(value);
     }
-  });
-  return queryResponse.features.map(f => f.attributes);
-}
+    if (/^Document$/.test(key) && typeof value === "number") {
+      return combineUrlParts(mapServerUrl, imageEndpoint, value.toString(10));
+    }
+    return value;
+  }
 
-/**
- * Gets lane info for a specific crossing location.
- * @param crossingLocationId
- * @param mapServiceUrl
- */
-export async function getLaneInfo(crossingLocationId: number, mapServiceUrl: string = defaultMapServiceUrl) {
-  return await getRelatedInfo<ILaneInfo>(crossingLocationId, 2, [
-    "LaneNumber",
-    "MilepostDirectionCode",
-    "VerticalClearanceMinimum"
-  ], mapServiceUrl);
-}
-
-/**
- * Gets advisory notes for a specific crossing location.
- * @param crossingLocationId
- * @param mapServiceUrl
- */
-export async function getAdvisoryNotes(crossingLocationId: number, mapServiceUrl: string = defaultMapServiceUrl) {
-  return await getRelatedInfo<IAdvisoryNote>(crossingLocationId, 4, [
-    "DirectionInd",
-    "AdvisoryNote"
-  ], mapServiceUrl);
-}
-
-/**
- * Gets info about documents related to a given crossing location.
- * @param crossingLocationId
- * @param mapServiceUrl
- */
-export async function getDocumentInfos(crossingLocationId: number, mapServiceUrl: string = defaultMapServiceUrl) {
-  return await getRelatedInfo<IDocumentInfo>(crossingLocationId, 3, [
-    "BridgeDocumentId",
-    "MilepostDirectionCode"
-  ], mapServiceUrl);
-}
-
-/**
- * Retrieves lane info, advisory notes, and document info for a crossing location.
- * @param crossingLocationId
- * @param mapServiceUrl
- */
-export async function getAllRelatedInfo(crossingLocationId: number, mapServiceUrl: string = defaultMapServiceUrl) {
-  const laneInfoTask = getLaneInfo(crossingLocationId, mapServiceUrl);
-  const advisoryNotesTask = getAdvisoryNotes(crossingLocationId, mapServiceUrl);
-  const documentInfoTask = getDocumentInfos(crossingLocationId, mapServiceUrl);
-
-  return Promise.all([laneInfoTask, advisoryNotesTask, documentInfoTask]);
-
+  return JSON.parse(responseJsonText, reviver);
 }
