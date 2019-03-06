@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "description": "Client for Bridge Vertical Clearance map service queries",
   "main": "dist/commonjs/index.js",
-  "module": "dist/esm/index.js",
-  "es:next": "dist/esm/index.js",
+  "module": "dist/esm/index.mjs",
+  "es:next": "dist/esm/index.mjs",
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "verticalclearance.css"
   ],
   "types": "dist/esm/index.d.ts",
   "dependencies": {},
@@ -14,6 +15,7 @@
     "intern": "^4.4.2",
     "isomorphic-fetch": "^2.2.1",
     "prettier": "^1.16.4",
+    "serve": "^10.1.2",
     "tslint": "^5.13.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
@@ -22,7 +24,8 @@
   "scripts": {
     "prepare": "npm run build:commonjs && npm run build:esm",
     "build:commonjs": "tsc --outDir dist/commonjs --target es5 --module commonjs",
-    "build:esm": "tsc --outDir dist/esm --target ESNEXT --module esNext --declaration",
+    "build:esm": "tsc --outDir dist/esm --target ESNEXT --module esNext --declaration && node build/fix-esm-modules.js",
+    "serve": "serve",
     "test": "intern"
   },
   "keywords": [

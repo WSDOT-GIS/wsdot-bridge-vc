@@ -1,0 +1,100 @@
+/* Style the lane info data to look like vertical clearance road signs. */
+.vc-data {
+  font-family: "Overpass", sans-serif;
+  font-weight: bold;
+  background-color: #ffd033;
+  padding: 0.1rem 0.2em;
+  border: double black 3px;
+  border-radius: 5px;
+  font-size: 12pt;
+}
+
+.vc-generic-disclaimer {
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.vc-advisory-note:before {
+  content: "⚠️ ";
+  font-size: 1.5em;
+}
+
+.vc-advisory-note:after {
+  content: " ⚠️";
+  font-size: 1.5em;
+}
+
+.vc-advisory-note {
+  background-color: rgb(247, 247, 135);
+  font-weight: bold;
+  color: black;
+  padding: 0.5em;
+  text-align: center;
+}
+
+.vc-image {
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.vc-feet-span:after,
+.vc-inches-span:after {
+  font-variant-caps: small-caps;
+  margin-left: 0.1em;
+}
+
+.vc-feet-span:after {
+  content: "ft ";
+}
+.vc-inches-span:after {
+  content: "in";
+}
+
+.lane-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.lane-table__cell {
+  text-align: center;
+  background: darkgray;
+  padding: 0.5rem 1rem;
+}
+
+.lane-table th {
+  background-color: rgb(16, 63, 45);
+  color: white;
+}
+
+.tab-container__content {
+  display: none;
+}
+
+.tab-container__content--selected {
+  display: unset;
+}
+
+.tab-container__tab-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  text-align: center;
+}
+
+.tab-container__tab {
+  border-radius: 5px 5px 0 0;
+  background-color: lightgray;
+  padding: 0.3em 0;
+  cursor: pointer;
+}
+
+.tab-container__tab--selected {
+  border: solid 1px black;
+  border-bottom: none;
+  background-color: white;
+  cursor: unset;
+}

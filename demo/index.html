@@ -1,20 +1,3 @@
-# Query Client for WSDOT Bridge Vertical Clearance ArcGIS Map Service
-
-Not ready for production. Work-in-progress. Instructions may not yet be functional.
-
-## Use
-
-### Install
-
-```
-npm install @wsdot/bridge-vc
-```
-
-### Sample using JavaScript Modules
-
-This sample demonstrates using this code via [JavaScript Modules].
-
-```html
 <!DOCTYPE html>
 <html>
   <head>
@@ -22,7 +5,7 @@ This sample demonstrates using this code via [JavaScript Modules].
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="./node_modules/@wsdot/bridge-vc/verticalclearance.css" />
+    <link rel="stylesheet" href="../verticalclearance.css" />
     <link
       href="https://fonts.googleapis.com/css?family=Lato|Overpass"
       rel="stylesheet"
@@ -32,7 +15,7 @@ This sample demonstrates using this code via [JavaScript Modules].
   <body>
     <script type="module">
       // import functions
-      import { createControl, fetchCrossingInfo } from "./node_modules/@wsdot/bridge-vc/dist/esm/index.mjs";
+      import { createControl, fetchCrossingInfo } from "../dist/esm/index.mjs";
       // Get crossing location ID URL search parameter.
       const urlSearchParams = new URLSearchParams(location.search);
       const idString = urlSearchParams.get("id");
@@ -46,7 +29,7 @@ This sample demonstrates using this code via [JavaScript Modules].
         // Query SOE for crossing location info,
         // then create control displaying that info.
         const mapServiceUrl =
-          "https://www.example.com/arcgis/rest/services/Bridge/BridgeVerticalClearance/MapServer";
+          "https://localhost:6443/arcgis/rest/services/Bridge/BridgeVerticalClearance/MapServer";
         fetchCrossingInfo(crossingId, mapServiceUrl).then(
           result => {
             const control = createControl(result);
@@ -62,5 +45,3 @@ This sample demonstrates using this code via [JavaScript Modules].
     </script>
   </body>
 </html>
-```
-[JavaScript Modules]:https://caniuse.com/#search=JavaScript%20Modules
