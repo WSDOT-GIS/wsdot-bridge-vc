@@ -1,3 +1,4 @@
+import { createCollapseablePanel } from "./CollapsablePanel";
 import {
   ICrossing,
   ICrossingLocation,
@@ -67,31 +68,6 @@ function createDirectionPane(relatedData: IDirectionalRelatedData) {
   return pane;
 }
 
-/**
- * Creates an HTML element displaying information about a crossing location.
- * @param crossing Response from BridgeVC ArcGIS Server Object Extension (SOE).
- * @returns If there is data for both directions, a tab container div is returned.
- * If there is only data for a single direction, the equivalent of a tab panel is
- * returned.
- */
-export function createControl(crossing: ICrossing): HTMLDivElement {
-  const { Increase, Decrease } = crossing.RelatedData;
-  const [iPane, dPane] = [Increase, Decrease].map(rd => {
-    if (!rd) {
-      return null;
-    }
-    return createDirectionPane(rd);
-  });
-  if (iPane && dPane) {
-    return createTabContainer({
-      "View Increasing Milepost": iPane!,
-      "View Decreasing Milepost": dPane!
-    });
-  } else {
-    return (iPane || dPane)!;
-  }
-}
-
 function createExtendedDetailsTable(crossingLocation: ICrossingLocation) {
   const extendedDetailsData: any = {
     "State Structure ID": crossingLocation.StateStructureId,
@@ -102,6 +78,7 @@ function createExtendedDetailsTable(crossingLocation: ICrossingLocation) {
     }${crossingLocation.ABInd || ""}`
   };
   const xdTable = document.createElement("table");
+  xdTable.classList.add(extendedDetailsTableClass);
   for (const key in extendedDetailsData) {
     if (extendedDetailsData.hasOwnProperty(key)) {
       const value = extendedDetailsData[key];
@@ -116,10 +93,70 @@ function createExtendedDetailsTable(crossingLocation: ICrossingLocation) {
   return xdTable;
 }
 
+function createGoogleStreetViewLink(x: number, y: number) {
+  // <a class="google-street-view" href="//maps.google.com/maps?q=&layer=c&cbll=47.84537299272301,-121.97032528754238&cbp=11,0,0,0,0" target="_blank">Google Street View</a>
+  const a = document.createElement("a");
+  a.href = `https://maps.google.com/maps?q=&layer=c&cbll=${y},${x}&cbp=11,0,0,0,0`;
+  a.target = "_blank";
+  a.rel = "noopener";
+  a.textContent = "Google Street View";
+  return a;
+}
+
+function createLocalAgencyContactLink() {
+  const a = document.createElement("a");
+  a.href = "https://www.wsdot.wa.gov/CommercialVehicle/county_permits.htm";
+  a.target = "_blank";
+  a.rel = "noopener";
+  a.textContent = "Local agency contacts";
+  return a;
+}
+
 /**
  * Create element displaying data applying to the crossing itself,
  * common to all directions.
  */
-export function createCommonArea(crossing: ICrossing) {
+function createCommonArea(crossing: ICrossing) {
   const table = createExtendedDetailsTable(crossing.CrossingLocation);
+
+  // TODO: Create and add "Google Street View" and "Local agency Contacts" links.
+
+  const collapsePanel = createCollapseablePanel("Details...", table, false);
+
+  const root = document.createElement("div");
+  root.appendChild(collapsePanel);
+  return root;
+}
+
+/**
+ * Creates an HTML element displaying information about a crossing location.
+ * @param crossing Response from BridgeVC ArcGIS Server Object Extension (SOE).
+ * @returns If there is data for both directions, a tab container div is returned.
+ * If there is only data for a single direction, the equivalent of a tab panel is
+ * returned.
+ */
+export function createControl(crossing: ICrossing): HTMLDivElement {
+  const { Increase, Decrease } = crossing.RelatedData;
+  const root = document.createElement("div");
+  const [iPane, dPane] = [Increase, Decrease].map(rd => {
+    if (!rd) {
+      return null;
+    }
+    return createDirectionPane(rd);
+  });
+  if (iPane && dPane) {
+    root.appendChild(
+      createTabContainer({
+        "View Increasing Milepost": iPane!,
+        "View Decreasing Milepost": dPane!
+      })
+    );
+  } else if (iPane || dPane) {
+    root.appendChild((iPane || dPane)!);
+  }
+
+  const common = createCommonArea(crossing);
+  root.appendChild(common);
+
+  return root;
 }

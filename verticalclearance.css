@@ -98,3 +98,15 @@
   background-color: white;
   cursor: unset;
 }
+
+.collapsable-panel--collapsed .collapsable-panel__content {
+  display: none;
+}
+
+.vc-extended-details-table {
+  width: 100%;
+}
+
+.vc-extended-details-table th, .vc-extended-details-table td {
+  text-align: left;
+}
