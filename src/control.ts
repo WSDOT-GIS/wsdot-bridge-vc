@@ -1,3 +1,4 @@
+import { Geometry, LineString, MultiLineString, Point } from "geojson";
 import { createCollapseablePanel } from "./CollapsablePanel";
 import {
   ICrossing,
@@ -93,6 +94,31 @@ function createExtendedDetailsTable(crossingLocation: ICrossingLocation) {
   return xdTable;
 }
 
+/**
+ * Gets the first set of XY coordinates.
+ */
+function getXY(geometry: Geometry): [number, number] {
+  if (geometry.type === "Point") {
+    return [geometry.coordinates[0], geometry.coordinates[1]];
+  }
+  if (geometry.type === "LineString" || geometry.type === "MultiPoint") {
+    const pt = geometry.coordinates[0];
+    return pt.slice(0, 2) as [number, number];
+  }
+  if (geometry.type === "MultiLineString" || geometry.type === "Polygon") {
+    const pt = geometry.coordinates[0][0];
+    return pt.slice(0, 2) as [number, number];
+  }
+  if (geometry.type === "MultiPolygon") {
+    const pt = geometry.coordinates[0][0][0];
+    return pt.slice(0, 2) as [number, number];
+  }
+  if (geometry.type === "GeometryCollection") {
+    return getXY(geometry.geometries[0]);
+  }
+  throw new Error("unsupported type");
+}
+
 function createGoogleStreetViewLink(x: number, y: number) {
   // <a class="google-street-view" href="//maps.google.com/maps?q=&layer=c&cbll=47.84537299272301,-121.97032528754238&cbp=11,0,0,0,0" target="_blank">Google Street View</a>
   const a = document.createElement("a");
@@ -120,10 +146,20 @@ function createCommonArea(crossing: ICrossing) {
   const table = createExtendedDetailsTable(crossing.crossingLocation);
 
   // TODO: Create and add "Google Street View" and "Local agency Contacts" links.
+  const linkList = document.createElement("ul");
+  let li = document.createElement("li");
+  let a = createGoogleStreetViewLink(...getXY(crossing.crossingLocation.shape));
+  li.appendChild(a);
+  linkList.appendChild(li);
+  li = document.createElement("li");
+  a = createLocalAgencyContactLink();
+  li.appendChild(a);
+  linkList.appendChild(li);
 
   const collapsePanel = createCollapseablePanel("Details...", table, false);
 
   const root = document.createElement("div");
+  root.appendChild(linkList);
   root.appendChild(collapsePanel);
   return root;
 }
