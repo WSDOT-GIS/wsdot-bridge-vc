@@ -50,7 +50,7 @@ export async function fetchCrossingInfo(
     if (/Date$/i.test(key) && typeof value === "string") {
       return new Date(value);
     }
-    if (/^Document$/.test(key) && typeof value === "number") {
+    if (/^document$/.test(key) && typeof value === "number") {
       return combineUrlParts(mapServerUrl, imageEndpoint, value.toString(10));
     }
     return value;

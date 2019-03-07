@@ -1,3 +1,5 @@
+import { Geometry } from "geojson";
+
 export type Direction = "I" | "D" | "B";
 
 export type ABIndicator = "B";
@@ -9,20 +11,20 @@ export type OnUnderCode = "ON" | "UNDER";
  * for a specific direction.
  */
 export interface IDirectionalRelatedData {
-  Direction: Direction;
+  direction: Direction;
   /**
    * An array of lane minimum vertical clearance values
    * ordered by lane number.
    */
-  Lanes: number[];
+  lanes: number[];
   /**
    * URL to a photograph of lane imagery.
    */
-  Document: string | null;
+  document: string | null;
   /**
    * Advisory note
    */
-  AdvisoryNote: string | null;
+  advisoryNote: string | null;
 }
 
 /**
@@ -33,11 +35,11 @@ export interface IRelatedData {
   /**
    * Related data for the increasing direction.
    */
-  Increase?: IDirectionalRelatedData | null;
+  increase?: IDirectionalRelatedData | null;
   /**
    * Related data for the decreasing direction.
    */
-  Decrease?: IDirectionalRelatedData | null;
+  decrease?: IDirectionalRelatedData | null;
 }
 
 /**
@@ -47,57 +49,61 @@ export interface ICrossingLocation {
   /**
    * Unique ID integer for the crossing location.
    */
-  CrossingLocationId: number;
+  crossingLocationId: number;
   /**
    * State Structure ID.
    */
-  StateStructureId: string;
+  stateStructureId: string;
   /**
    * Bridge Number
    */
-  BridgeNumber: string;
+  bridgeNumber: string;
   /**
    * State Route Identifier
    */
-  StateRouteIdentifier: string;
+  stateRouteIdentifier: string;
   /**
    * State Route Milepost
    */
-  SRMP: number;
+  srmp: number;
   /**
    * Ahead / Back indicator for the SRMP. "B" = "back" mileage.
    * Otherwise "ahead" is assumed.
    */
-  ABInd: ABIndicator | null;
+  abInd: ABIndicator | null;
   /**
    * Direction
    */
-  DirectionInd: Direction;
+  directionInd: Direction;
   /**
    * Description of the crossing
    */
-  CrossingDesc: string;
+  crossingDesc: string;
   /**
    * "ON" or "UNDER"
    */
-  OnUnderCode: OnUnderCode;
+  onUnderCode: OnUnderCode;
   /**
    * Indicates if review has been performed for the increasing direction
    */
-  DecreasingDirReviewCmltInd: boolean;
+  decreasingDirReviewCmltInd: boolean;
   /**
    * Indicates if review has been performed for the decreasing direction
    */
-  IncreasingDirReviewCmltInd: boolean;
+  increasingDirReviewCmltInd: boolean;
   /**
    * Date that the record was created.
    */
-  RecordCreateData: Date;
+  recordCreateData: Date;
   /**
    * Date that the record was last updated. Will be null if
    * the record has not been updated since creation.
    */
-  RecordUpdateDate: Date | null;
+  recordUpdateDate: Date | null;
+  /**
+   * GeoJSON Point or Polyline string.
+   */
+  shape: Geometry;
 }
 
 /**
@@ -108,9 +114,9 @@ export interface ICrossing {
   /**
    * Crossing location
    */
-  CrossingLocation: ICrossingLocation;
+  crossingLocation: ICrossingLocation;
   /**
    * Data related to the crossing location.
    */
-  RelatedData: IRelatedData;
+  relatedData: IRelatedData;
 }

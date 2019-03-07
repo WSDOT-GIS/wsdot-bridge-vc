@@ -33,14 +33,14 @@ function createDirectionPane(relatedData: IDirectionalRelatedData) {
   let advisoryNoteElement: HTMLElement | undefined;
   let imageOrPlaceholder: HTMLElement;
 
-  if (relatedData.AdvisoryNote) {
+  if (relatedData.advisoryNote) {
     advisoryNoteElement = document.createElement("div");
-    advisoryNoteElement.textContent = relatedData.AdvisoryNote;
+    advisoryNoteElement.textContent = relatedData.advisoryNote;
     advisoryNoteElement.classList.add(vcAdvisoryNoteClass);
   }
-  if (relatedData.Document) {
+  if (relatedData.document) {
     const image = document.createElement("img");
-    image.src = relatedData.Document;
+    image.src = relatedData.document;
     image.classList.add(vcImageClass);
     imageOrPlaceholder = image;
     image.addEventListener("click", openImageInNewTab);
@@ -49,7 +49,7 @@ function createDirectionPane(relatedData: IDirectionalRelatedData) {
     placeholder.classList.add(vcNoImageClass);
     imageOrPlaceholder = placeholder;
   }
-  const lanesTable = createLaneVCTable(relatedData.Lanes);
+  const lanesTable = createLaneVCTable(relatedData.lanes);
   const pane = document.createElement("div");
   if (advisoryNoteElement) {
     pane.appendChild(advisoryNoteElement);
@@ -70,12 +70,12 @@ function createDirectionPane(relatedData: IDirectionalRelatedData) {
 
 function createExtendedDetailsTable(crossingLocation: ICrossingLocation) {
   const extendedDetailsData: any = {
-    "State Structure ID": crossingLocation.StateStructureId,
-    "Bridge Number": crossingLocation.BridgeNumber,
-    "Crossing Description": crossingLocation.CrossingDesc,
-    "State Route Location": `${crossingLocation.StateRouteIdentifier} @ MP ${
-      crossingLocation.SRMP
-    }${crossingLocation.ABInd || ""}`
+    "State Structure ID": crossingLocation.stateStructureId,
+    "Bridge Number": crossingLocation.bridgeNumber,
+    "Crossing Description": crossingLocation.crossingDesc,
+    "State Route Location": `${crossingLocation.stateRouteIdentifier} @ MP ${
+      crossingLocation.srmp
+    }${crossingLocation.abInd || ""}`
   };
   const xdTable = document.createElement("table");
   xdTable.classList.add(extendedDetailsTableClass);
@@ -117,7 +117,7 @@ function createLocalAgencyContactLink() {
  * common to all directions.
  */
 function createCommonArea(crossing: ICrossing) {
-  const table = createExtendedDetailsTable(crossing.CrossingLocation);
+  const table = createExtendedDetailsTable(crossing.crossingLocation);
 
   // TODO: Create and add "Google Street View" and "Local agency Contacts" links.
 
@@ -136,9 +136,9 @@ function createCommonArea(crossing: ICrossing) {
  * returned.
  */
 export function createControl(crossing: ICrossing): HTMLDivElement {
-  const { Increase, Decrease } = crossing.RelatedData;
+  const { increase, decrease } = crossing.relatedData;
   const root = document.createElement("div");
-  const [iPane, dPane] = [Increase, Decrease].map(rd => {
+  const [iPane, dPane] = [increase, decrease].map(rd => {
     if (!rd) {
       return null;
     }
