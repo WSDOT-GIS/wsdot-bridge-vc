@@ -7,3 +7,16 @@ body {
 body {
   font-family: Lato, sans-serif;
 }
+
+.vc-image {
+  text-align: center;
+}
+
+.vc-root {
+  margin: 1em;
+  padding: 1em;
+  width: 500px;
+  height: 90vh;
+  overflow: auto;
+  border: 2px inset lightgray;
+}

@@ -17,17 +17,21 @@ export function createCollapseablePanel(
     root.classList.add(collapsedClass);
   }
 
-  const toggle = document.createElement("div");
+  const toggle = document.createElement("p");
   toggle.classList.add(toggleClass);
-  toggle.textContent = label;
+  const toggleLink = document.createElement("a");
+  toggleLink.href = "#";
+  toggle.appendChild(toggleLink);
+  toggleLink.textContent = label;
 
   root.appendChild(toggle);
   content.classList.add(contentClass);
   root.appendChild(content);
 
-  toggle.addEventListener("click", () => {
+  toggleLink.addEventListener("click", e => {
     root.classList.toggle(collapsedClass);
     root.classList.toggle(expandedClass);
+    e.preventDefault();
   });
 
   return root;

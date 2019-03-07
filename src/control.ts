@@ -9,21 +9,13 @@ import { createLaneVCTable } from "./LaneVCTable";
 import { createTabContainer } from "./Tabs";
 
 // Define classes
+const vcRootClass = "vc-root";
 const vcImageClass = "vc-image";
 const vcNoImageClass = "vc-no-image";
 const vcAdvisoryNoteClass = "vc-advisory-note";
 const extendedDetailsTableClass = "vc-extended-details-table";
 const genericDisclaimerClass = "vc-generic-disclaimer";
-
-/**
- * This function, when added as an image element's "click" event listener,
- * will open the image in a new window when the user clicks on the image element.
- * @param this img element that the user clicked on.
- * @param ev event (unused by this function)
- */
-function openImageInNewTab(this: HTMLImageElement, ev: MouseEvent) {
-  open(this.src);
-}
+const vcLinkListClass = "vc-link-list";
 
 /**
  * Creates the content pane for the data associated with a
@@ -43,8 +35,12 @@ function createDirectionPane(relatedData: IDirectionalRelatedData) {
     const image = document.createElement("img");
     image.src = relatedData.document;
     image.classList.add(vcImageClass);
-    imageOrPlaceholder = image;
-    image.addEventListener("click", openImageInNewTab);
+    const imgLink = document.createElement("a");
+    imgLink.href = relatedData.document;
+    imgLink.target = "_blank";
+    imgLink.rel = "noopener";
+    imgLink.appendChild(image);
+    imageOrPlaceholder = imgLink;
   } else {
     const placeholder = document.createElement("div");
     placeholder.classList.add(vcNoImageClass);
@@ -147,6 +143,7 @@ function createCommonArea(crossing: ICrossing) {
 
   // TODO: Create and add "Google Street View" and "Local agency Contacts" links.
   const linkList = document.createElement("ul");
+  linkList.classList.add(vcLinkListClass);
   let li = document.createElement("li");
   let a = createGoogleStreetViewLink(...getXY(crossing.crossingLocation.shape));
   li.appendChild(a);
@@ -193,6 +190,7 @@ export function createControl(crossing: ICrossing): HTMLDivElement {
 
   const common = createCommonArea(crossing);
   root.appendChild(common);
+  root.classList.add(vcRootClass);
 
   return root;
 }

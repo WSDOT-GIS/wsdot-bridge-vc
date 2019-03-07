@@ -35,7 +35,6 @@
 }
 
 .vc-image {
-  cursor: pointer;
   max-width: 100%;
 }
 
@@ -109,4 +108,13 @@
 
 .vc-extended-details-table th, .vc-extended-details-table td {
   text-align: left;
+}
+
+.vc-link-list {
+  list-style: none;
+  grid-template-columns: 1fr 1fr;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  display: grid;
 }
