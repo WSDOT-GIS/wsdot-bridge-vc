@@ -1,6 +1,14 @@
 import ArcGisError from "./ArcGisError";
 import { ICrossing } from "./interfaces";
+
+export * from "./CollapsablePanel";
 export * from "./control";
+export * from "./conversion";
+export * from "./interfaces";
+export * from "./LaneVCTable";
+export * from "./Tabs";
+
+export { ArcGisError };
 
 const defaultMapServiceUrl =
   "https://data.wsdot.wa.gov/arcgis/rest/services/Bridge/BridgeVerticalClearance/MapServer";
