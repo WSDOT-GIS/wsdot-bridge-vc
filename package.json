@@ -38,5 +38,17 @@
     "access": "public"
   },
   "author": "Jeff Jacobson",
-  "license": "Unlicense"
+  "license": "Unlicense",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WSDOT-GIS/wsdot-bridge-vc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WSDOT-GIS/wsdot-bridge-vc/issues"
+  },
+  "homepage": "https://github.com/WSDOT-GIS/wsdot-bridge-vc#readme"
 }
