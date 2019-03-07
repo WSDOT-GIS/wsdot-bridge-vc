@@ -2,17 +2,60 @@
 
 Not ready for production. Work-in-progress. Instructions may not yet be functional.
 
-## Use
-
-### Install
+## Install
 
 ```
 npm install @wsdot/bridge-vc
 ```
 
-### Sample using JavaScript Modules
+## Use
 
-This sample demonstrates using this code via [JavaScript Modules].
+This sample demonstrates using this code via [JavaScript Modules]. You can also use [Webpack] (or a similar tool) to bundle your code and the imported modules together [to be compatible with more browsers][JavaScript Modules].
+
+`index.mjs`
+
+This is the code for the demo page's [JavaScript Module][JavaScript Modules].
+
+```javascript
+// import functions
+import { createControl, fetchCrossingInfo } from "./node_modules/@wsdot/bridge-vc/dist/esm/index.mjs";
+// Get crossing location ID URL search parameter.
+const urlSearchParams = new URLSearchParams(location.search);
+const idString = urlSearchParams.get("id");
+const crossingId = parseInt(idString);
+// Write error message if ID is invalid.
+if (isNaN(crossingId)) {
+  const p = document.createElement("p");
+  p.textContent = `invalid crossing id: ${idString}`;
+  document.body.appendChild(p);
+} else {
+  // Query SOE for crossing location info,
+  // then create control displaying that info.
+  const mapServiceUrl =
+    "https://www.example.com/arcgis/rest/services/Bridge/BridgeVerticalClearance/MapServer";
+  fetchCrossingInfo(crossingId, mapServiceUrl).then(
+    result => {
+      const control = createControl(result);
+      document.body.appendChild(control);
+    },
+    error => {
+      const p = document.createElement("p");
+      p.textContent = error.message;
+      document.body.appendChild(p);
+    }
+  );
+}
+```
+
+If using webpack and / or TypeScript, the import statement would be slightly different. Only the package name is used, instead of the path to the packages main module script file.
+
+```javascript
+import { createControl, fetchCrossingInfo } from "@wsdot/bridge-vc";
+```
+
+`index.html`
+
+This is the index page that references the JavaScript Module defined above.
 
 ```html
 <!DOCTYPE html>
@@ -30,37 +73,9 @@ This sample demonstrates using this code via [JavaScript Modules].
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
-    <script type="module">
-      // import functions
-      import { createControl, fetchCrossingInfo } from "./node_modules/@wsdot/bridge-vc/dist/esm/index.mjs";
-      // Get crossing location ID URL search parameter.
-      const urlSearchParams = new URLSearchParams(location.search);
-      const idString = urlSearchParams.get("id");
-      const crossingId = parseInt(idString);
-      // Write error message if ID is invalid.
-      if (isNaN(crossingId)) {
-        const p = document.createElement("p");
-        p.textContent = `invalid crossing id: ${idString}`;
-        document.body.appendChild(p);
-      } else {
-        // Query SOE for crossing location info,
-        // then create control displaying that info.
-        const mapServiceUrl =
-          "https://www.example.com/arcgis/rest/services/Bridge/BridgeVerticalClearance/MapServer";
-        fetchCrossingInfo(crossingId, mapServiceUrl).then(
-          result => {
-            const control = createControl(result);
-            document.body.appendChild(control);
-          },
-          error => {
-            const p = document.createElement("p");
-            p.textContent = error.message;
-            document.body.appendChild(p);
-          }
-        );
-      }
-    </script>
+    <script type="module" src="index.mjs"></script>
   </body>
 </html>
 ```
 [JavaScript Modules]:https://caniuse.com/#search=JavaScript%20Modules
+[Webpack]:https://webpack.js.org/
