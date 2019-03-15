@@ -40,13 +40,8 @@
 
 .vc-feet-span:after,
 .vc-inches-span:after {
-  font-variant-caps: small-caps;
+  font-variant: small-caps;
   margin-left: 0.1em;
-  /*
-  The following setting is necessary to make small-caps work in Edge.
-  See https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7798088/
-  */
-  font-feature-settings: 'smcp' 1;
 }
 
 .vc-feet-span:after {
