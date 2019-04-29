@@ -1,6 +1,6 @@
 {
   "name": "@wsdot/bridge-vc",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Client for Bridge Vertical Clearance map service queries",
   "main": "dist/commonjs/index.js",
   "module": "dist/esm/index.mjs",
@@ -11,21 +11,19 @@
   ],
   "types": "dist/esm/index.d.ts",
   "devDependencies": {
-    "@types/geojson": "^7946.0.6",
+    "@types/geojson": "^7946.0.7",
     "intern": "^4.4.2",
     "isomorphic-fetch": "^2.2.1",
-    "prettier": "^1.16.4",
-    "serve": "^10.1.2",
-    "tslint": "^5.14.0",
+    "prettier": "^1.17.0",
+    "tslint": "^5.16.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.4.5"
   },
   "scripts": {
     "prepare": "npm run build:commonjs && npm run build:esm",
     "build:commonjs": "tsc --outDir dist/commonjs --target es5 --module commonjs",
     "build:esm": "tsc --outDir dist/esm --target ESNEXT --module esNext --declaration && node build/fix-esm-modules.js",
-    "serve": "serve",
     "test": "intern"
   },
   "keywords": [

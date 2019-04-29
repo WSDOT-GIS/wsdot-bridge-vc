@@ -54,13 +54,11 @@ function createDirectionPane(relatedData: IDirectionalRelatedData) {
   pane.appendChild(imageOrPlaceholder);
   pane.appendChild(lanesTable);
 
-  if (!advisoryNoteElement) {
-    const genericDisclaimer = document.createElement("p");
-    genericDisclaimer.classList.add(genericDisclaimerClass);
-    genericDisclaimer.textContent =
-      "Use the lowest vertical clearance measurements displayed by lane.";
-    pane.appendChild(genericDisclaimer);
-  }
+  const genericDisclaimer = document.createElement("p");
+  genericDisclaimer.classList.add(genericDisclaimerClass);
+  genericDisclaimer.textContent =
+    "These measurements shown are the clearances for each respective travel lane.  The lane numbering is referenced from left lane to right lane.  The values shown have no association with clearance over shoulders.";
+  pane.appendChild(genericDisclaimer);
 
   return pane;
 }

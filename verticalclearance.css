@@ -11,7 +11,7 @@
 
 .vc-generic-disclaimer {
   font-style: italic;
-  text-align: center;
+  text-align: justify;
   margin: 0;
   padding: 0;
 }
@@ -60,6 +60,10 @@
   text-align: center;
   background: darkgray;
   padding: 0.5rem 1rem;
+}
+
+.lane-table__cell:not(:first-child) {
+  border-left: 1px dashed white;
 }
 
 .lane-table th {
