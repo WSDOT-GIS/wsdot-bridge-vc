@@ -57,7 +57,7 @@ function createDirectionPane(relatedData: IDirectionalRelatedData) {
   const genericDisclaimer = document.createElement("p");
   genericDisclaimer.classList.add(genericDisclaimerClass);
   genericDisclaimer.textContent =
-    "These measurements shown are the clearances for each respective travel lane.  The lane numbering is referenced from left lane to right lane.  The values shown have no association with clearance over shoulders.";
+    "Minimum clearances shown for each lane, with lanes numbered from left to right.  Minimum shoulder clearances not shown, but may be posted on structure";
   pane.appendChild(genericDisclaimer);
 
   return pane;
