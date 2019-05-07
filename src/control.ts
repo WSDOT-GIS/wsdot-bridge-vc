@@ -57,7 +57,7 @@ function createDirectionPane(relatedData: IDirectionalRelatedData) {
   const genericDisclaimer = document.createElement("p");
   genericDisclaimer.classList.add(genericDisclaimerClass);
   genericDisclaimer.textContent =
-    "Minimum clearances shown for each lane, with lanes numbered from left to right.  Minimum shoulder clearances not shown, but may be posted on structure";
+    "Minimum clearances shown for each lane, with lanes numbered from left to right. (Camera angle may not display all lanes in line with roadway in the photo.) Minimum shoulder clearances not shown, but may be posted on structure.";
   pane.appendChild(genericDisclaimer);
 
   return pane;
