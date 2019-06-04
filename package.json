@@ -14,11 +14,11 @@
     "@types/geojson": "^7946.0.7",
     "intern": "^4.4.2",
     "isomorphic-fetch": "^2.2.1",
-    "prettier": "^1.17.0",
-    "tslint": "^5.16.0",
+    "prettier": "^1.17.1",
+    "tslint": "^5.17.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^3.4.5"
+    "typescript": "^3.5.1"
   },
   "scripts": {
     "prepare": "npm run build:commonjs && npm run build:esm",
