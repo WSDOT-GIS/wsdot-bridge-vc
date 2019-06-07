@@ -1,4 +1,4 @@
-import { Geometry, LineString, MultiLineString, Point } from "geojson";
+import { Geometry } from "geojson";
 import { createCollapseablePanel } from "./CollapsablePanel";
 import {
   ICrossing,
@@ -159,6 +159,15 @@ function createCommonArea(crossing: ICrossing) {
   return root;
 }
 
+export function shouldForceTabs(crossing: ICrossing) {
+  const { stateRouteIdentifier } = crossing.crossingLocation;
+  // Return true for mainline
+  if (stateRouteIdentifier.length === 3) {
+    return true;
+  }
+  return false;
+}
+
 /**
  * Creates an HTML element displaying information about a crossing location.
  * @param crossing Response from BridgeVC ArcGIS Server Object Extension (SOE).
@@ -183,7 +192,22 @@ export function createControl(crossing: ICrossing): HTMLDivElement {
       })
     );
   } else if (iPane || dPane) {
-    root.appendChild((iPane || dPane)!);
+    if (shouldForceTabs(crossing)) {
+      const paneInfo: any = {};
+      if (iPane) {
+        paneInfo.Increase = iPane;
+      }
+      if (dPane) {
+        paneInfo.Decrease = dPane;
+      }
+      try {
+        root.appendChild(createTabContainer(paneInfo));
+      } catch (e) {
+        console.error("error creating tab container", e)
+      }
+    } else {
+      root.appendChild((iPane || dPane)!);
+    }
   }
 
   const common = createCommonArea(crossing);
