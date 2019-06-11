@@ -159,18 +159,18 @@ function createCommonArea(crossing: ICrossing) {
   return root;
 }
 
-export function shouldForceTabs(crossing: ICrossing) {
+/**
+ * Determines if a popup for a single direction crossing should be forced to
+ * have tabs based on the crossings stateRouteIdentifier property.
+ * @param crossing a crossing
+ */
+function shouldForceTabs(crossing: ICrossing) {
   const { stateRouteIdentifier } = crossing.crossingLocation;
-  // Return true for mainline
-  if (stateRouteIdentifier.length === 3) {
-    return true;
-  }
-  const rrtRe = /\d{3}((AR)|(CN)|(F[DI])|(LX)|(RL)|(SP))/i;
-  if (rrtRe.test(stateRouteIdentifier)) {
-    return true;
-  }
-
-  return false;
+  const mainlineRe = /^\d{3}$/;
+  const rrtRe = /^\d{3}((AR)|(CN)|(F[DI])|(LX)|(RL)|(SP))/i;
+  return (
+    mainlineRe.test(stateRouteIdentifier) || rrtRe.test(stateRouteIdentifier)
+  );
 }
 
 /**
@@ -208,7 +208,7 @@ export function createControl(crossing: ICrossing): HTMLDivElement {
       try {
         root.appendChild(createTabContainer(paneInfo));
       } catch (e) {
-        console.error("error creating tab container", e)
+        console.error("error creating tab container", e);
       }
     } else {
       root.appendChild((iPane || dPane)!);
