@@ -165,6 +165,11 @@ export function shouldForceTabs(crossing: ICrossing) {
   if (stateRouteIdentifier.length === 3) {
     return true;
   }
+  const rrtRe = /\d{3}((AR)|(CN)|(F[DI])|(LX)|(RL)|(SP))/i;
+  if (rrtRe.test(stateRouteIdentifier)) {
+    return true;
+  }
+
   return false;
 }
 
