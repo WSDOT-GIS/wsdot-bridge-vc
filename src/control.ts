@@ -195,10 +195,10 @@ export function createControl(crossing: ICrossing): HTMLDivElement {
     if (shouldForceTabs(crossing)) {
       const paneInfo: any = {};
       if (iPane) {
-        paneInfo.Increase = iPane;
+        paneInfo.Increasing = iPane;
       }
       if (dPane) {
-        paneInfo.Decrease = dPane;
+        paneInfo.Decreasing = dPane;
       }
       try {
         root.appendChild(createTabContainer(paneInfo));

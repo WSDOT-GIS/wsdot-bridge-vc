@@ -59,7 +59,7 @@
 .lane-table__cell {
   text-align: center;
   background: darkgray;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
 }
 
 .lane-table__cell:not(:first-child) {
