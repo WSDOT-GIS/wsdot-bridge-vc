@@ -167,7 +167,7 @@ function createCommonArea(crossing: ICrossing) {
 function shouldForceTabs(crossing: ICrossing) {
   const { stateRouteIdentifier } = crossing.crossingLocation;
   const mainlineRe = /^\d{3}$/;
-  const rrtRe = /^\d{3}((AR)|(CN)|(F[DI])|(LX)|(RL)|(SP))/i;
+  const rrtRe = /^\d{3}((AR)|(C[NO])|(F[DI])|(LX)|(RL)|(SP))/i;
   return (
     mainlineRe.test(stateRouteIdentifier) || rrtRe.test(stateRouteIdentifier)
   );
