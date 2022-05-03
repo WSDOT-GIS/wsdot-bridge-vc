@@ -1,16 +1,16 @@
-const collapseablePanelRootClass = "collapsable-panel";
-const collapsedClass = `${collapseablePanelRootClass}--collapsed`;
-const expandedClass = `${collapseablePanelRootClass}--expanded`;
-const toggleClass = `${collapseablePanelRootClass}__toggle`;
-const contentClass = `${collapseablePanelRootClass}__content`;
+const collapsablePanelRootClass = "collapsable-panel";
+const collapsedClass = `${collapsablePanelRootClass}--collapsed`;
+const expandedClass = `${collapsablePanelRootClass}--expanded`;
+const toggleClass = `${collapsablePanelRootClass}__toggle`;
+const contentClass = `${collapsablePanelRootClass}__content`;
 
-export function createCollapseablePanel(
+export function createCollapsablePanel(
   label: string,
   content: HTMLElement,
-  startExpanded: boolean = false
+  startExpanded = false
 ) {
   const root = document.createElement("div");
-  root.classList.add(collapseablePanelRootClass);
+  root.classList.add(collapsablePanelRootClass);
   if (startExpanded) {
     root.classList.add(expandedClass);
   } else {

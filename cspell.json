@@ -1,0 +1,21 @@
+{
+    "version": "0.2",
+    "allowCompoundWords": true,
+    "minWordLength": 4,
+    "ignorePaths": [],
+    "dictionaryDefinitions": [
+        {
+            "name": "custom-dictionary",
+            "path": "./.cspell/custom-dictionary.txt",
+            "addWords": true
+        }
+    ],
+    "dictionaries": [
+        "custom-dictionary"
+    ],
+    "words": [],
+    "ignoreWords": [
+        "cbll"
+    ],
+    "import": []
+}

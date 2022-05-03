@@ -1,5 +1,5 @@
 import { Geometry } from "geojson";
-import { createCollapseablePanel } from "./CollapsablePanel";
+import { createCollapsablePanel } from "./CollapsablePanel";
 import {
   ICrossing,
   ICrossingLocation,
@@ -75,6 +75,7 @@ function createExtendedDetailsTable(crossingLocation: ICrossingLocation) {
   const xdTable = document.createElement("table");
   xdTable.classList.add(extendedDetailsTableClass);
   for (const key in extendedDetailsData) {
+    // eslint-disable-next-line no-prototype-builtins
     if (extendedDetailsData.hasOwnProperty(key)) {
       const value = extendedDetailsData[key];
       const row = xdTable.insertRow();
@@ -151,7 +152,7 @@ function createCommonArea(crossing: ICrossing) {
   li.appendChild(a);
   linkList.appendChild(li);
 
-  const collapsePanel = createCollapseablePanel("Details...", table, false);
+  const collapsePanel = createCollapsablePanel("Details...", table, false);
 
   const root = document.createElement("div");
   root.appendChild(linkList);
