@@ -4,8 +4,8 @@
  * * Append ".mjs" to references in import statements.
  */
 
-const fs = require("fs").promises;
-const path = require("path");
+import { promises as fs } from "fs";
+import { join } from "path";
 const esmDir = "dist/esm";
 
 // run self executing, async function.
@@ -20,7 +20,7 @@ const esmDir = "dist/esm";
       continue;
     }
     // Combine folder and filename.
-    fn = path.join(esmDir, fn);
+    fn = join(esmDir, fn);
     // Create the new filename by replacing the extension.
     const newName = fn.replace(jsRe, ".mjs");
 
@@ -30,7 +30,7 @@ const esmDir = "dist/esm";
     });
 
     // This Regex matches a reference to a local module.
-    const fileRefRe = /"(\.\/[^\.]+?)"/g;
+    const fileRefRe = /"(\.\/[^.]+?)"/g;
 
     // Replace the references to .js files (in file the .js extension is omitted) with equivalent .mjs files.
     fileContents = fileContents.replace(fileRefRe, '"$1.mjs"');
