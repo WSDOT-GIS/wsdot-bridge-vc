@@ -25,6 +25,7 @@
     "build:commonjs": "tsc --outDir dist/commonjs --target es5 --module commonjs",
     "build:esm": "tsc --outDir dist/esm --target ESNEXT --module esNext --declaration && node build/fix-esm-modules.mjs",
     "lint": "eslint src/**",
+    "lint:fix": "eslint src/** --fix",
     "test": "intern"
   },
   "keywords": [
@@ -48,5 +49,9 @@
   "bugs": {
     "url": "https://github.com/WSDOT-GIS/wsdot-bridge-vc/issues"
   },
-  "homepage": "https://github.com/WSDOT-GIS/wsdot-bridge-vc#readme"
+  "homepage": "https://github.com/WSDOT-GIS/wsdot-bridge-vc#readme",
+  "dependencies": {
+    "@esri/arcgis-rest-feature-service": "^4.0.2",
+    "@esri/arcgis-rest-request": "^4.0.2"
+  }
 }

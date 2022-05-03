@@ -7,12 +7,11 @@ export * from "./conversion";
 export * from "./interfaces";
 export * from "./LaneVCTable";
 export * from "./Tabs";
-export * from "./relationQuery";
+export * from "./relations";
 
 export { ArcGisError };
 
-export const defaultMapServiceUrl =
-  "https://data.wsdot.wa.gov/arcgis/rest/services/Bridge/BridgeVerticalClearance/MapServer";
+export const defaultMapServiceUrl = "https://data.wsdot.wa.gov/arcgis/rest/services/Bridge/BridgeVerticalClearance/MapServer";
 
 const soePartialUrl = "exts/BridgeVC";
 
