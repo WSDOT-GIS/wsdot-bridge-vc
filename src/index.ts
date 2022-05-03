@@ -1,4 +1,4 @@
-import ArcGisError from "./ArcGisError";
+import ArcGisError, { IArcGisErrorResponse } from "./ArcGisError";
 import { ICrossing } from "./interfaces";
 
 export * from "./CollapsablePanel";
@@ -34,8 +34,22 @@ function combineUrlParts(root: string, ...parts: string[]) {
  * using the Bridge Vertical Clearance REST SOE.
  * @param crossingLocationId Unique identifying integer of a crossing location.
  * @param mapServerUrl URL of the map service that will be queried.
+ * @deprecated
  */
 export async function fetchCrossingInfo(
+  crossingLocationId: number,
+  mapServerUrl: string = defaultMapServiceUrl
+): Promise<ICrossing> {
+  return await fetchCrossingInfoFromSoe(crossingLocationId, mapServerUrl)
+}
+
+/**
+ * Uses fetch API go retrieve info about a crossing location
+ * using the Bridge Vertical Clearance REST SOE.
+ * @param crossingLocationId Unique identifying integer of a crossing location.
+ * @param mapServerUrl URL of the map service that will be queried.
+ */
+ export async function fetchCrossingInfoFromSoe(
   crossingLocationId: number,
   mapServerUrl: string = defaultMapServiceUrl
 ): Promise<ICrossing> {
@@ -54,7 +68,7 @@ export async function fetchCrossingInfo(
    * @param key - Property name
    * @param value - property value
    */
-  function reviver(key: string, value: any) {
+  function reviver(key: string, value: unknown) {
     if (/Date$/i.test(key) && typeof value === "string") {
       return new Date(value);
     }
@@ -65,7 +79,7 @@ export async function fetchCrossingInfo(
   }
 
   // Try to parse the response from the REST endpoint.
-  let responseObj: any;
+  let responseObj: ICrossing | IArcGisErrorResponse;
   try {
     responseObj = JSON.parse(responseJsonText, reviver);
   } catch (err) {
@@ -87,10 +101,10 @@ export async function fetchCrossingInfo(
   // code 200 (OK) instead of one of the HTTP status codes that indicates an error.
   // Detect this situation and throw an error if it occurs.
   if (responseObj.hasOwnProperty("error")) {
-    throw new ArcGisError(responseObj);
+    throw new ArcGisError(responseObj as IArcGisErrorResponse);
   }
 
   // Return the parsed JSON response. This object is expected to match the
   // ICrossing interface.
-  return responseObj;
+  return responseObj as ICrossing;
 }
