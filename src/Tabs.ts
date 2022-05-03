@@ -58,7 +58,7 @@ export function createTabContainer(contents: { [label: string]: HTMLElement }) {
     if (!contents) {
       continue;
     }
-    if (contents.hasOwnProperty(label)) {
+    if (label in contents) {
       // This element will be the content pane.
       const element = contents[label];
       // Create the tab.

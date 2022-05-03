@@ -100,7 +100,7 @@ export async function fetchCrossingInfo(
   // When an ArcGIS Server request returns an error, it still uses HTTP status
   // code 200 (OK) instead of one of the HTTP status codes that indicates an error.
   // Detect this situation and throw an error if it occurs.
-  if (responseObj.hasOwnProperty("error")) {
+  if ("error" in responseObj) {
     throw new ArcGisError(responseObj as IArcGisErrorResponse);
   }
 

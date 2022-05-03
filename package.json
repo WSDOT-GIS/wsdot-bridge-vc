@@ -25,6 +25,7 @@
     "prepare": "npm run build:commonjs && npm run build:esm",
     "build:commonjs": "tsc --outDir dist/commonjs --target es5 --module commonjs",
     "build:esm": "tsc --outDir dist/esm --target ESNEXT --module esNext --declaration && node build/fix-esm-modules.js",
+    "lint": "eslint src/**",
     "test": "intern"
   },
   "keywords": [
