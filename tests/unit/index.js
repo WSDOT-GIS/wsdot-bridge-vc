@@ -1,9 +1,8 @@
-const { fetchCrossingInfo } = require("../../dist/commonjs/index");
-if (typeof fetch === "undefined") {
-  require("isomorphic-fetch");
-}
+import { fetchCrossingInfo } from "../../dist/commonjs/index";
 
+// eslint-disable-next-line no-undef
 const { describe, it } = intern.getPlugin("interface.bdd");
+// eslint-disable-next-line no-undef
 const { assert } = intern.getPlugin("chai");
 
 describe("bridge-vc", () => {

@@ -1,6 +1,6 @@
 {
   "name": "@wsdot/bridge-vc",
-  "version": "1.0.0",
+  "version": "2.0.0-alpha",
   "description": "Client for Bridge Vertical Clearance map service queries",
   "type": "module",
   "main": "dist/commonjs/index.js",
