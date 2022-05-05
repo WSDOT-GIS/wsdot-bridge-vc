@@ -26,7 +26,7 @@
     "build:esm": "tsc --outDir dist/esm --target ESNEXT --module esNext --declaration && node build/fix-esm-modules.mjs",
     "lint": "eslint src/**",
     "lint:fix": "eslint src/** --fix",
-    "test": "intern"
+    "test": "node tests/relation-query.mjs"
   },
   "keywords": [
     "wsdot",

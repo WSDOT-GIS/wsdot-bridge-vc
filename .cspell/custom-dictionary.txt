@@ -1,5 +1,8 @@
 # Custom Dictionary Words
+arcgis
 ARCGISSOC
 noopener
+oid
+oids
 srmp
 wsdot
