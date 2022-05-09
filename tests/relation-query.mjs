@@ -109,18 +109,13 @@ async function getLayerInfo(mapServiceUrl = defaultMapServiceUrl) {
  * @returns {FeatureResult} document info
  */
 async function getDocumentInfo(layerId, documentOid, mapServiceUrl = defaultMapServiceUrl) {
-  console.group("getDocumentInfo");
-  try {
-    const url = new URL(`${layerId}/${documentOid}`, mapServiceUrl);
-    url.searchParams.append("f", "json");
-    console.log(url.href);
-    const response = await fetch(url);
-    const featureText = await response.text();
-    const feature = JSON.parse(featureText, customJsonParse);
-    return feature
-  } finally {
-    console.groupEnd();
-  }
+  const url = new URL(`${layerId}/${documentOid}`, mapServiceUrl);
+  url.searchParams.append("f", "json");
+  console.log(url.href);
+  const response = await fetch(url);
+  const featureText = await response.text();
+  const feature = JSON.parse(featureText, customJsonParse);
+  return feature
 }
 
 
@@ -225,19 +220,28 @@ function* enumerateLayerRelations(layer) {
   }
 }
 
+// Initialize an array to store document query promises.
 const documentPromises = [];
 
+// Loop through all of the layers.
 for (const layer of layerInfo.layers) {
   console.group(`Layer ${layer.id}: ${layer.name}`);
+  // Loop through all of the current layer's relationships.
   for (const { relationship, relatedRecordPromise } of enumerateLayerRelations(layer)) {
+    // Query related records for the current relationship.
     relatedRecordPromise.then(featureResult => {
       console.group(`Related record query completed layer ${layer.name}, ${relationship.name}`);
+      // This regex will match relationships that contain document data (i.e., images).
       const isDocuments = /Documents$/i.test(relationship.name);
-      assert.ok("relatedRecordGroups" in featureResult && Array.isArray(featureResult.relatedRecordGroups));
+      assert.ok("relatedRecordGroups" in featureResult && Array.isArray(featureResult.relatedRecordGroups), "Result contains an array called 'relatedRecordGroups'.");
+      // Loop through the related record groups.
       for (const rrGroup of featureResult.relatedRecordGroups) {
         console.group("Record group %d", rrGroup.objectId);
+        // Loop through the related records.
         for (const record of rrGroup.relatedRecords) {
           console.log(record);
+          // If the current related record is for a document, query to get the 
+          // document data.
           if (isDocuments) {
             const documentId = record.attributes.BridgeDocumentId;
             console.log(`starting document query for document #${documentId}`);
@@ -257,4 +261,5 @@ for (const layer of layerInfo.layers) {
   console.groupEnd();
 }
 
+// Wait for document queries to complete.
 Promise.all(documentPromises);
