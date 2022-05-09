@@ -109,14 +109,18 @@ async function getLayerInfo(mapServiceUrl = defaultMapServiceUrl) {
  * @returns {FeatureResult} document info
  */
 async function getDocumentInfo(layerId, documentOid, mapServiceUrl = defaultMapServiceUrl) {
-  const url = new URL(`${layerId}/${documentOid}`, mapServiceUrl);
-  url.searchParams.append("f", "json");
-  console.log(url.href);
-  const response = await fetch(url);
-  const featureText = await response.text();
-
-  const feature = JSON.parse(featureText, customJsonParse);
-  return feature
+  console.group("getDocumentInfo");
+  try {
+    const url = new URL(`${layerId}/${documentOid}`, mapServiceUrl);
+    url.searchParams.append("f", "json");
+    console.log(url.href);
+    const response = await fetch(url);
+    const featureText = await response.text();
+    const feature = JSON.parse(featureText, customJsonParse);
+    return feature
+  } finally {
+    console.groupEnd();
+  }
 }
 
 
@@ -133,7 +137,7 @@ async function getDocumentInfo(layerId, documentOid, mapServiceUrl = defaultMapS
  * @param {URL} mapServiceUrl Map service URL
  * @returns {Promise<FeatureOids>}
  */
-async function getLayerOids(layerId, where="1=1", mapServiceUrl = defaultMapServiceUrl) {
+async function getLayerOids(layerId, where = "1=1", mapServiceUrl = defaultMapServiceUrl) {
   const url = new URL(`${layerId}/query`, mapServiceUrl);
   url.searchParams.append("f", "json");
   url.searchParams.append("where", where);
@@ -152,7 +156,7 @@ async function getLayerOids(layerId, where="1=1", mapServiceUrl = defaultMapServ
  * @param {boolean} [returnGeometry] Indicates if geometry should be returned.
  * @param {URL} [mapServiceUrl] Map service URL
  */
-async function queryRelatedRecords(layerId, objectIds, relationshipId, outFields="*", returnGeometry, mapServiceUrl = defaultMapServiceUrl) {
+async function queryRelatedRecords(layerId, objectIds, relationshipId, outFields = "*", returnGeometry, mapServiceUrl = defaultMapServiceUrl) {
   // {{mapService}}/{{layerId}}/queryRelatedRecords?objectIds={{featureOid}}&relationshipId={{relationshipId}}&outFields={{outFields}}&returnGeometry=false&f={{f}}
   const url = new URL(`${layerId}/queryRelatedRecords`, mapServiceUrl)
   // Convert outFields array into a comma-separated string.
@@ -169,7 +173,7 @@ async function queryRelatedRecords(layerId, objectIds, relationshipId, outFields
     returnGeometry: !!returnGeometry,
     f: "json"
   }
-  
+
   for (const pName in searchParams) {
     url.searchParams.set(pName, searchParams[pName]);
   }
@@ -217,20 +221,33 @@ function* enumerateLayerRelations(layer) {
     const fields = relatedTable.fields.filter(f => f.name !== docContentField).map(f => f.name);
     // Query the related records. Do not await.
     const relatedRecordPromise = queryRelatedRecords(layer.id, firstOid, relationship.id, fields);
-    yield {layer, relationship, relatedRecordPromise};
+    yield { layer, relationship, relatedRecordPromise };
   }
 }
 
+const documentPromises = [];
+
 for (const layer of layerInfo.layers) {
   console.group(`Layer ${layer.id}: ${layer.name}`);
-  for (const {_, relationship, relatedRecordPromise} of enumerateLayerRelations(layer)) {
+  for (const { relationship, relatedRecordPromise } of enumerateLayerRelations(layer)) {
     relatedRecordPromise.then(featureResult => {
       console.group(`Related record query completed layer ${layer.name}, ${relationship.name}`);
+      const isDocuments = /Documents$/i.test(relationship.name);
       assert.ok("relatedRecordGroups" in featureResult && Array.isArray(featureResult.relatedRecordGroups));
       for (const rrGroup of featureResult.relatedRecordGroups) {
         console.group("Record group %d", rrGroup.objectId);
         for (const record of rrGroup.relatedRecords) {
           console.log(record);
+          if (isDocuments) {
+            const documentId = record.attributes.BridgeDocumentId;
+            console.log(`starting document query for document #${documentId}`);
+            const docPromise = getDocumentInfo(relationship.relatedTableId, documentId).then(documentInfo => {
+              console.log("document info", documentInfo);
+            }, error => {
+              console.error(error);
+            });
+            documentPromises.push(docPromise);
+          }
         }
         console.groupEnd();
       }
@@ -239,4 +256,5 @@ for (const layer of layerInfo.layers) {
   }
   console.groupEnd();
 }
-// const documentInfo = await getDocumentInfo(3, 294);
+
+Promise.all(documentPromises);
