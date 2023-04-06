@@ -1,6 +1,7 @@
 import { getFeature, queryRelated, getService } from '@esri/arcgis-rest-feature-service';
 import { defaultMapServiceUrl } from "..";
 import { ICrossing } from "../interfaces";
+import NotImplementedError from '../exceptions/NotImplementedError';
 
 export function getBridgeVCServiceInfo(mapServiceUrl = defaultMapServiceUrl) {
     return getService({
@@ -115,5 +116,5 @@ export async function fetchCrossingInfo(
     relationshipIds: IRelationshipIds = defaultRelationshipIds
 ): Promise<ICrossing> {
     const { crossings, bridges } = layerIds
-
+    throw new NotImplementedError();
 }
