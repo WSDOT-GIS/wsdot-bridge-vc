@@ -1,5 +1,7 @@
 # Query Client for WSDOT Bridge Vertical Clearance ArcGIS Map Service
 
+⚠️ **This project is no longer active and has been archived** ⚠️
+
 Not ready for production. Work-in-progress. Instructions may not yet be functional.
 
 ## Install
